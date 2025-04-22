@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 215 30% 15%;
+
+    --card: 0 0% 98%;
+    --card-foreground: 215 30% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 30% 15%;
+
+    --primary: 90 25% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 90 15% 85%;
+    --secondary-foreground: 90 25% 30%;
+
+    --muted: 90 15% 95%;
+    --muted-foreground: 90 10% 40%;
+
+    --accent: 45 80% 60%;
+    --accent-foreground: 215 30% 15%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 43 60% 50%; /* Gold border from menu image */
+    --input: 90 15% 95%;
+    --ring: 43 60% 50%; /* Gold accent from menu image */
+
+    --radius: 0.25rem;
+
+    --sidebar: 240 25% 18%; /* Dark navy from menu image */
+    --header: 240 25% 18%; /* Dark navy from menu image */
+  }
+
+  .dark {
+    --background: 240 25% 18%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 25% 20%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 25% 18%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 43 60% 50%;
+    --primary-foreground: 240 25% 18%;
+
+    --secondary: 240 25% 25%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 25% 25%;
+    --muted-foreground: 240 20% 80%;
+
+    --accent: 43 60% 50%;
+    --accent-foreground: 240 25% 18%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 43 60% 50%;
+    --input: 240 25% 25%;
+    --ring: 43 60% 50%;
+
+    --sidebar: 240 30% 15%;
+    --header: 240 30% 15%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
