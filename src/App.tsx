@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect } from "react";
-import { useRoutes, Routes, Route, useLocation } from "react-router-dom";
+import { useRoutes, Routes, Route } from "react-router-dom";
 import Home from "./components/home";
 import routes from "tempo-routes";
 import MainLayout from "./layouts/MainLayout";
@@ -7,6 +7,7 @@ import MainLayout from "./layouts/MainLayout";
 // Lazy load module pages
 const Dashboard = lazy(() => import("./dashboard"));
 const Projects = lazy(() => import("./projects"));
+const EditProject = lazy(() => import("./projects/editProjects"));
 const Properties = lazy(() => import("./properties"));
 const Units = lazy(() => import("./units"));
 const Sales = lazy(() => import("./sales"));
@@ -22,7 +23,7 @@ const Settings = lazy(() => import("./settings"));
 // Preload all module pages
 const preloadModules = () => {
   import("./dashboard");
-  import("./projects");
+  import("./projects/projects");
   import("./properties");
   import("./units");
   import("./sales");
@@ -37,16 +38,15 @@ const preloadModules = () => {
 };
 
 function App() {
-  const location = useLocation();
-
   // Preload all modules on initial load
   useEffect(() => {
     preloadModules();
   }, []);
 
   return (
-    <Suspense fallback={<p>Loading...</p>}>
-      <>
+    <div>
+      <Suspense fallback={<p>Loading...</p>}>
+        {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route
@@ -62,6 +62,22 @@ function App() {
             element={
               <MainLayout>
                 <Projects />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/projects/:id"
+            element={
+              <MainLayout>
+                <EditProject />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/projects/new"
+            element={
+              <MainLayout>
+                <EditProject />
               </MainLayout>
             }
           />
@@ -159,9 +175,8 @@ function App() {
             <Route path="/tempobook/*" />
           )}
         </Routes>
-        {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}
-      </>
-    </Suspense>
+      </Suspense>
+    </div>
   );
 }
 

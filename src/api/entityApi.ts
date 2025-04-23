@@ -152,3 +152,75 @@ export const projectsApi = {
     updateRecord<Project>("projects", id, updates),
   deleteProject: (id: string) => deleteRecord("projects", id),
 };
+
+// Project Features API
+export const projectFeaturesApi = {
+  getFeatures: (options?: QueryOptions) =>
+    fetchData<ProjectFeature>("project_features", options),
+  getFeatureById: (id: string) =>
+    fetchById<ProjectFeature>("project_features", id),
+  getFeaturesByProjectId: (projectId: string, options?: QueryOptions) => {
+    return fetchData<ProjectFeature>("project_features", {
+      ...options,
+      filters: { ...options?.filters, project_id: projectId },
+    });
+  },
+  createFeature: (feature: Partial<ProjectFeature>) =>
+    createRecord<ProjectFeature>("project_features", feature),
+  updateFeature: (id: string, updates: Partial<ProjectFeature>) =>
+    updateRecord<ProjectFeature>("project_features", id, updates),
+  deleteFeature: (id: string) => deleteRecord("project_features", id),
+};
+
+// Project Specifications API
+export const projectSpecificationsApi = {
+  getSpecifications: (options?: QueryOptions) =>
+    fetchData<ProjectSpecification>("project_specifications", options),
+  getSpecificationById: (id: string) =>
+    fetchById<ProjectSpecification>("project_specifications", id),
+  getSpecificationsByProjectId: (projectId: string, options?: QueryOptions) => {
+    return fetchData<ProjectSpecification>("project_specifications", {
+      ...options,
+      filters: { ...options?.filters, project_id: projectId },
+    });
+  },
+  createSpecification: (specification: Partial<ProjectSpecification>) =>
+    createRecord<ProjectSpecification>("project_specifications", specification),
+  updateSpecification: (id: string, updates: Partial<ProjectSpecification>) =>
+    updateRecord<ProjectSpecification>("project_specifications", id, updates),
+  deleteSpecification: (id: string) =>
+    deleteRecord("project_specifications", id),
+};
+
+// Project Amenities API
+export const projectAmenitiesApi = {
+  getAmenities: (options?: QueryOptions) =>
+    fetchData<ProjectAmenity>("project_amenities", options),
+  getAmenityById: (id: string) =>
+    fetchById<ProjectAmenity>("project_amenities", id),
+  getAmenitiesByProjectId: (projectId: string, options?: QueryOptions) => {
+    return fetchData<ProjectAmenity>("project_amenities", {
+      ...options,
+      filters: { ...options?.filters, project_id: projectId },
+    });
+  },
+  createAmenity: (amenity: Partial<ProjectAmenity>) =>
+    createRecord<ProjectAmenity>("project_amenities", amenity),
+  updateAmenity: (id: string, updates: Partial<ProjectAmenity>) =>
+    updateRecord<ProjectAmenity>("project_amenities", id, updates),
+  deleteAmenity: (id: string) => deleteRecord("project_amenities", id),
+};
+
+// Project Amenity Options API
+export const projectAmenityOptionsApi = {
+  getAmenityOptions: (options?: QueryOptions) =>
+    fetchData<ProjectAmenityOption>("project_amenity_options", options),
+  getAmenityOptionById: (id: string) =>
+    fetchById<ProjectAmenityOption>("project_amenity_options", id),
+  getAmenityOptionsByCategory: (category: string, options?: QueryOptions) => {
+    return fetchData<ProjectAmenityOption>("project_amenity_options", {
+      ...options,
+      filters: { ...options?.filters, category },
+    });
+  },
+};

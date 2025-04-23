@@ -105,7 +105,9 @@ export interface Payment extends BaseEntity {
 // Project entity
 export interface Project extends BaseEntity {
   name: string;
+  name_ar?: string;
   description?: string;
+  description_ar?: string;
   property_id?: string;
   start_date: string;
   end_date?: string;
@@ -114,4 +116,70 @@ export interface Project extends BaseEntity {
   status: "planning" | "in_progress" | "completed" | "on_hold" | "cancelled";
   manager_id?: string;
   documents?: string[];
+  location?: ProjectLocation;
+  // Unit model properties
+  has_garden?: boolean;
+  has_roof?: boolean;
+  has_private_pool?: boolean;
+  has_parking_space?: boolean;
+  total_rooms?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  balconies?: number;
+  living_rooms?: number;
+  kitchens?: number;
+  unit_area?: number;
+  display_order?: number;
+  unit_type_id?: string;
+  unit_usage_id?: string;
+}
+
+// Project Location
+export interface ProjectLocation {
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+  coordinates?: {
+    latitude?: number;
+    longitude?: number;
+  };
+}
+
+// Project Feature
+export interface ProjectFeature extends BaseEntity {
+  project_id: string;
+  name: string;
+  description?: string;
+  status: "planned" | "in_progress" | "completed";
+  priority: "low" | "medium" | "high";
+}
+
+// Project Specification
+export interface ProjectSpecification extends BaseEntity {
+  project_id: string;
+  category: string;
+  name: string;
+  value: string;
+  unit?: string;
+  notes?: string;
+}
+
+// Project Amenity Option
+export interface ProjectAmenityOption extends BaseEntity {
+  name: string;
+  category: string;
+  icon?: string;
+  description?: string;
+}
+
+// Project Amenity
+export interface ProjectAmenity extends BaseEntity {
+  project_id: string;
+  amenity_option_id: string;
+  amenity_name?: string; // Denormalized for convenience
+  category?: string; // Denormalized for convenience
+  status: "planned" | "in_progress" | "completed";
+  notes?: string;
 }
