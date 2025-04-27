@@ -11,6 +11,9 @@ import { supabase } from "@/lib/supabase";
 
 const Projects = () => {
   const navigate = useNavigate();
+  const selectedCompanyId =
+    localStorage.getItem("selectedCompanyId") ||
+    "00000000-0000-0000-0000-000000000001";
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,38 +25,33 @@ const Projects = () => {
 
   useEffect(() => {
     fetchProjects();
-  }, [currentPage, searchQuery]);
+  }, [currentPage, searchQuery, selectedCompanyId]);
 
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      // Default company ID if none is set
-      const defaultCompanyId = "00000000-0000-0000-0000-000000000001";
+      // Use the selected company ID from context, or fall back to default
+      const companyId =
+        selectedCompanyId || "00000000-0000-0000-0000-000000000001";
 
-      // Direct Supabase query to ensure we're getting data
-      let query = supabase
-        .from("projects")
-        .select("*", { count: "exact" })
-        .order("updated_at", { ascending: false });
-
-      // Apply search filter if provided
-      if (searchQuery) {
-        query = query.or(
-          `name.ilike.%${searchQuery}%,project_name_en.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`,
-        );
+      // Store the selected company ID in localStorage for persistence
+      if (selectedCompanyId) {
+        localStorage.setItem("selectedCompanyId", selectedCompanyId);
       }
 
-      // Apply pagination
-      query = query.range(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize - 1,
+      // Use the projectsApi instead of direct Supabase query
+      const { data, count } = await projectsApi.getProjectsByCompanyId(
+        companyId,
+        {
+          page: currentPage,
+          pageSize,
+          filters: searchQuery ? { search: searchQuery } : undefined,
+          sortBy: "updated_at",
+          sortOrder: "desc",
+        },
       );
 
-      const { data, count, error } = await query;
-
-      if (error) throw error;
-
-      console.log("Fetched projects from Supabase:", data);
+      console.log("Fetched projects:", data);
 
       setProjects(data || []);
       setTotalCount(count || 0);

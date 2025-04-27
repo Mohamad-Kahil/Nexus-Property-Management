@@ -19,6 +19,7 @@ type QueryOptions = {
   filters?: Record<string, any>;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+  companyId?: string;
 };
 
 // Empty mock database for fallback
@@ -95,11 +96,29 @@ export async function fetchData<T>(
   entityType: string,
   options?: QueryOptions,
 ): Promise<{ data: T[]; count: number; page: number; pageSize: number }> {
-  const { page = 1, pageSize = 10, filters, sortBy, sortOrder } = options || {};
+  const {
+    page = 1,
+    pageSize = 10,
+    filters,
+    sortBy,
+    sortOrder,
+    companyId,
+  } = options || {};
 
   try {
     // Build the Supabase query
     let query = supabase.from(entityType).select("*", { count: "exact" });
+
+    // Apply company filter if provided
+    if (companyId) {
+      query = query.eq("company_id", companyId);
+    } else if (entityType === "projects") {
+      // For projects, always filter by company_id if not explicitly provided
+      const defaultCompanyId =
+        localStorage.getItem("selectedCompanyId") ||
+        "00000000-0000-0000-0000-000000000001";
+      query = query.eq("company_id", defaultCompanyId);
+    }
 
     // Apply filters if provided
     if (filters) {

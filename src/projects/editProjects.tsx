@@ -15,14 +15,15 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Save, MapPin } from "lucide-react";
 import { projectsApi } from "@/api/entityApi";
-import type { Project } from "@/models/entityModels";
+import type { Project, ProjectLocation } from "@/models/entityModels";
 import { useToast } from "@/components/ui/use-toast";
 import FeaturesTab from "@/components/projects/FeaturesTab";
 import SpecificationsTab from "@/components/projects/SpecificationsTab";
 import AmenitiesTab from "@/components/projects/AmenitiesTab";
 import BasicInfoTab from "@/components/projects/BasicInfoTab";
 
-interface ProjectLocation {
+// Using ProjectLocation from models/entityModels
+interface ProjectLocationTemp {
   address?: string;
   city?: string;
   state?: string;
@@ -44,6 +45,9 @@ const EditProject = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("basic-info");
+  const selectedCompanyId =
+    localStorage.getItem("selectedCompanyId") ||
+    "00000000-0000-0000-0000-000000000001";
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -117,10 +121,13 @@ const EditProject = () => {
 
     setSaving(true);
     try {
-      // Combine project with location data
+      // Combine project with location data and ensure company_id is set
       const updatedProject = {
         ...project,
         location: projectLocation,
+        company_id:
+          localStorage.getItem("selectedCompanyId") ||
+          "00000000-0000-0000-0000-000000000001",
       };
 
       if (id) {
@@ -129,6 +136,15 @@ const EditProject = () => {
           title: "Success",
           description: "Project updated successfully",
         });
+      } else {
+        // This is a new project
+        const newProject = await projectsApi.createProject(updatedProject);
+        toast({
+          title: "Success",
+          description: "Project created successfully",
+        });
+        // Navigate to the edit page for the new project
+        navigate(`/projects/${newProject.id}`);
       }
     } catch (err) {
       console.error(err);

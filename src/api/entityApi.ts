@@ -23,6 +23,7 @@ type QueryOptions = {
   filters?: Record<string, any>;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+  companyId?: string;
 };
 
 // Properties API
@@ -140,14 +141,28 @@ export const projectsApi = {
   getProjects: (options?: QueryOptions) =>
     fetchData<Project>("projects", options),
   getProjectById: (id: string) => fetchById<Project>("projects", id),
+  getProjectsByCompanyId: (companyId: string, options?: QueryOptions) => {
+    return fetchData<Project>("projects", {
+      ...options,
+      filters: { ...options?.filters, company_id: companyId },
+    });
+  },
   getProjectsByPropertyId: (propertyId: string, options?: QueryOptions) => {
     return fetchData<Project>("projects", {
       ...options,
       filters: { ...options?.filters, property_id: propertyId },
     });
   },
-  createProject: (project: Partial<Project>) =>
-    createRecord<Project>("projects", project),
+  createProject: (project: Partial<Project>) => {
+    // Ensure company_id is set if not provided
+    if (!project.company_id) {
+      const defaultCompanyId =
+        localStorage.getItem("selectedCompanyId") ||
+        "00000000-0000-0000-0000-000000000001";
+      project.company_id = defaultCompanyId;
+    }
+    return createRecord<Project>("projects", project);
+  },
   updateProject: (id: string, updates: Partial<Project>) =>
     updateRecord<Project>("projects", id, updates),
   deleteProject: (id: string) => deleteRecord("projects", id),
@@ -223,4 +238,16 @@ export const projectAmenityOptionsApi = {
       filters: { ...options?.filters, category },
     });
   },
+};
+
+// Companies API
+export const companiesApi = {
+  getCompanies: (options?: QueryOptions) =>
+    fetchData<Company>("companies", options),
+  getCompanyById: (id: string) => fetchById<Company>("companies", id),
+  createCompany: (company: Partial<Company>) =>
+    createRecord<Company>("companies", company),
+  updateCompany: (id: string, updates: Partial<Company>) =>
+    updateRecord<Company>("companies", id, updates),
+  deleteCompany: (id: string) => deleteRecord("companies", id),
 };

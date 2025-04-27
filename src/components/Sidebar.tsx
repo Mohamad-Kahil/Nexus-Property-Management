@@ -69,8 +69,18 @@ const NavItem = ({
   );
 };
 
-const Sidebar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+interface SidebarProps {
+  isCollapsed?: boolean;
+  toggleSidebar?: () => void;
+}
+
+const Sidebar = ({
+  isCollapsed: propIsCollapsed,
+  toggleSidebar,
+}: SidebarProps = {}) => {
+  const [stateIsCollapsed, setIsCollapsed] = useState(false);
+  const isCollapsed =
+    propIsCollapsed !== undefined ? propIsCollapsed : stateIsCollapsed;
   const location = useLocation();
 
   const navItems = [
@@ -100,7 +110,7 @@ const Sidebar = () => {
         isCollapsed ? "w-[70px]" : "w-[280px]",
       )}
     >
-      <div className="flex h-16 items-center justify-between border-b border-gray-700 px-4">
+      <div className="flex h-16 items-center justify-between border-b border-border/40 px-4">
         {!isCollapsed && (
           <div className="flex items-center gap-2">
             <Building2 className="h-6 w-6 text-primary" />
@@ -112,7 +122,9 @@ const Sidebar = () => {
           variant="ghost"
           size="icon"
           className="ml-auto h-8 w-8"
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={() =>
+            toggleSidebar ? toggleSidebar() : setIsCollapsed(!isCollapsed)
+          }
         >
           {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
         </Button>
